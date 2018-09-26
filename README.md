@@ -1,2 +1,2 @@
 # test-os
-experimentation around operating system kernel
+experimentation around operating system kernel and various other low level features
