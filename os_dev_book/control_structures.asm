@@ -20,3 +20,5 @@ then_block:
     mov bx, 23
 
 the_end:
+
+cmp [ah], 0
