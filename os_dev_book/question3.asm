@@ -15,14 +15,18 @@ else_if_then_block:
     mov al, 'B'
 
 the_end:                            ; label to jump to after the control structures
+jmp print_function                  ; print the result on the screen
 
-mov ah, 0x0e                        ; int 10/ah = 0x0e -> BIOS teletype 
-int 0x10                            ; trigger interrupt
-
+return_to_here:                     ; label to return to after printing
 jmp $                               ; infinite loop
                                     ; same as 
                                     ; infinite_loop:
                                     ;   jmp infinite_loop
+
+print_function:
+    mov ah, 0x0e                        ; int 10/ah = 0x0e -> BIOS teletype 
+    int 0x10                            ; trigger interrupt
+    jmp return_to_here
 
 ; padding and magic BIOS number
 times 510-($-$$) db 0
