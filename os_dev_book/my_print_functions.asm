@@ -5,6 +5,8 @@ print_hex_16bits:
     ; save the state of regs on stack 
     pusha
 
+    mov bx, HEX_OUT
+
     popa 
     ret
 
