@@ -13,6 +13,15 @@ mov al, 'l'
 int 0x10
 mov al, 'o'
 int 0x10
+mov al, 'W'
+int 0x10
+mov al, 'o'
+int 0x10
+mov al, 'r'
+int 0x10
+mov al, 'l'
+int 0x10
+mov al, 'd'
 
 jmp $ ; jump to the current address
 
