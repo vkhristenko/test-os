@@ -1,5 +1,10 @@
 mov bx, 0
 
+;mov bp, 0x8000                      ; set the address of the stack's base pointer
+                                    ; we assign stack a bit above where our
+                                    ; boot sector gets loaded
+;mov sp, bp                          ; top of the stack: stack pointer
+
 cmp bx, 4                           ; compare bx content with 4
 jle then_block                      ; if bx <= 4 jump to then_block
 cmp bx, 40                          ; compare bx with 40
@@ -15,18 +20,22 @@ else_if_then_block:
     mov al, 'B'
 
 the_end:                            ; label to jump to after the control structures
-jmp print_function                  ; print the result on the screen
+call my_print_function              ; call the 'print_function' routine
+                                    ; push return address (next instruction) 
+                                    ; on to the stack
+                                    ; jmp to the label
 
-return_to_here:                     ; label to return to after printing
+mov al, 'B'                          ; lower byte copy to al
+call my_print_function                 ; print 
+mov al, 'C'                         
+call my_print_function
+
 jmp $                               ; infinite loop
                                     ; same as 
                                     ; infinite_loop:
                                     ;   jmp infinite_loop
 
-print_function:
-    mov ah, 0x0e                        ; int 10/ah = 0x0e -> BIOS teletype 
-    int 0x10                            ; trigger interrupt
-    jmp return_to_here
+%include "my_print_function.asm" 
 
 ; padding and magic BIOS number
 times 510-($-$$) db 0
