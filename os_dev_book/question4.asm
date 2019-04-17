@@ -11,7 +11,7 @@ call print_string
 
 jmp $
 
-%include "my_print_function.asm"
+%include "my_print_functions.asm"
 
 ; data
 HELLO_MSG:

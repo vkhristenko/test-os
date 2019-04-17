@@ -1,6 +1,18 @@
-print_string:
-    ; bx contains the address of the string to print
+;
+; print 16bit hex number
+;
+print_hex_16bits:
+    ; save the state of regs on stack 
+    pusha
 
+    popa 
+    ret
+
+;
+; print a string
+; bx contains the address of the string to print
+;
+print_string:
     ; save the state on stack
     pusha
 
