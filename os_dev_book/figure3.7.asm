@@ -1,7 +1,7 @@
 ;
 ; a simple boot sector program that demonstrates segment offsetting
 ;
-mov ah, 0xoe                        ; int 10/ah = 0eh -> scrolling teletype 
+mov ah, 0x0e                        ; int 10/ah = 0eh -> scrolling teletype 
                                     ; bios routine
 mov al, [the_secret]
 int 0x10                            ; does this print an X?
