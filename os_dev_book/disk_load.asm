@@ -14,6 +14,7 @@ disk_load:
     jc disk_error               ; jump if error (i.e. carry flag set)
 
     pop dx                      ; restore DX from the stack
+    add dh, 0x01
     cmp dh, al                  ; if AL (sectors read) != DH (sectors expected)
     jne disk_error              ; display error msg
     ret
