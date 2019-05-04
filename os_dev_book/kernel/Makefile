@@ -6,6 +6,15 @@ all: os_image
 run: os_image
 	qemu-system-i386 --fda os_image
 
+# automatically expand to a list of existing files that match the patterns
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h)
+
+# TODO make sources dep on all header files
+
+# create a list of object files to build
+OBJ = ${C_SOURCES:.c=.o}
+
 # this is the actual disk image that the computer loads,
 # which is the combination of our compiled bootsector and kernel
 os_image: boot_sector.bin kernel.bin
@@ -14,16 +23,19 @@ os_image: boot_sector.bin kernel.bin
 # build the kernel binary 
 # - the kernel entry
 # - compiled c kernel
-kernel.bin : kernel_entry.o kernel.o
+kernel.bin : kernel/kernel_entry.o ${OBJ}
 	ld -o kernel.bin -m elf_i386 -Ttext 0x1000 $^ --oformat binary
 
-# build the kernel object file
-kernel.o: kernel.c
-	gcc -ffreestanding -m32 -c $< -o $@
+# generic rule for compiling c code to an object file
+# TODO: header deps
+%.o : %.c
+	gcc -ffreestanding -c $< -o $@
 
-# build the kernel entry object file
-kernel_entry.o: kernel_entry.asm
+%.o : %.asm
 	nasm $< -f elf -o $@
+
+%.bin : %.asm
+	nasm $< -f bin -I './' -o $@
 
 # assemble the boot sector to raw machine code
 #   the -I options tells nasm where to find our useful assembly
