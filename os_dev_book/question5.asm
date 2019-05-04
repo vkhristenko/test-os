@@ -11,9 +11,6 @@ jmp $
 
 %include "my_print_functions.asm"
 
-; data
-HEX_OUT: db '0x0000',0
-
 ; padding and magic bios number
 times 510-($-$$) db 0 
 dw 0xaa55

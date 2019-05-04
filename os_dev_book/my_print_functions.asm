@@ -51,6 +51,9 @@ print_hex_16bit:
     popa 
     ret
 
+; template
+HEX_OUT: db '0x0000',0
+
 ; use bl reg byte
 choose_one_of:
     cmp bl, 0
