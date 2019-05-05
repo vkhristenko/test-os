@@ -29,7 +29,7 @@ kernel.bin : kernel/kernel_entry.o ${OBJ}
 # generic rule for compiling c code to an object file
 # TODO: header deps
 %.o : %.c
-	gcc -m32 -ffreestanding -c $< -o $@
+	gcc -m32 -I "./" -ffreestanding -c $< -o $@
 
 %.o : %.asm
 	nasm $< -f elf -o $@

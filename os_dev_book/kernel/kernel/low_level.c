@@ -1,3 +1,5 @@
+#include "kernel/low_level.h"
+
 unsigned char port_byte_in(unsigned short port) {
     // a handy c wrapper function that reads a byte from the specified port
     // "=a" (result) means: put AL register in variable RESULT when finished
