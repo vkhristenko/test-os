@@ -1,0 +1,1 @@
+jmp far [eax]
