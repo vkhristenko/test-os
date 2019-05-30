@@ -8,5 +8,6 @@ int i = 10;
 
 int main() {
     printf("hello world!\n");
+    some_func();
     return 0;
 }
