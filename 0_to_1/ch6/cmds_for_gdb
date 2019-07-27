@@ -1,0 +1,12 @@
+info target
+
+# examine 20 asm instructions starting at main symbol
+x/20i main
+
+# pretty print 
+print globalX
+
+# pretty print
+print a
+
+print $2
