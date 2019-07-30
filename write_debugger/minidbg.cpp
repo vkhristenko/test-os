@@ -7,6 +7,44 @@
 #include <sys/ptrace.h>
 #include <sys/types.h>
 
+class breakpoint {
+public:
+    breakpoint(pid_t pid, std::intptr_t addr)
+        : pid_{pid}, addr_{addr}, enabled_{false}, saved_data_{}
+    {}
+
+    void enable();
+    void disable();
+
+    auto is_enabled() const -> bool { return enabled_; }
+    auto get_address() const -> std::intptr_t { return addr_; }
+
+private:
+    pid_t pid_;
+    std::intptr_t addr_;
+    bool enabled_;
+    uint8_t saved_data_;
+};
+
+void breakpoint::enable() {
+    auto data = ptrace(PTRACE_PEEKDATA, pid_, addr_, nullptr);
+    saved_data_ = static_cast<uint8_t>(data & 0xff);
+
+    uint64_t int3 = 0xcc;
+    uint64_t data_with_int3 = ((data & ~0xff) | int3);
+    ptrace(PTRACE_POKEDATA, pid_, addr_, data_with_int3);
+
+    enabled_ = true;
+}
+
+void breakpoint::disable() {
+    auto data = ptrace(PTRACE_PEEKDATA, pid_, addr_, nullptr);
+    auto restored_data = ((data & ~0xff) | saved_data_);
+    ptrace(PTRACE_POKEDATA, pid_, addr_, restored_data);
+
+    enabled_ = false;
+}
+
 class debugger {
 public:
     debugger(std::string prog_name, pid_t pid)
@@ -17,7 +55,10 @@ public:
     void handle_command(std::string const&);
     void continue_execution();
 
+    void set_breakpoint_at_address(std::intptr_t addr);
+
 private:
+    std::unordered_map<std::intptr_t, breakpoint> breakpoints_;
     std::string prog_name_;
     pid_t pid_;
 };
@@ -30,6 +71,13 @@ std::optional<std::string> getInput(std::string const& str) {
         return std::nullopt;
 
     return std::optional{input};
+}
+
+void debugger::set_breakpoint_at_address(std::intptr_t addr) {
+    std::cout << "set braekpoint at address 0x" << std::hex << addr << std::endl;
+    breakpoint bp{pid_, addr};
+    bp.enable();
+    breakpoints_[addr] = bp;
 }
 
 void debugger::run() {
@@ -66,6 +114,10 @@ void debugger::handle_command(std::string const& line) {
 
     if (is_prefix(command, "continue")) {
         continue_execution();
+    } else if (is_prefix(command, "break")) {
+        std::string addr{args[1], 2};
+        set_breakpoint_at_addrss(std::stol(addr, 0, 16));
+    }
     } else {
         std::cerr << "unknown command" << std::endl;
     }
